@@ -1,171 +1,119 @@
 #include <iostream>
 #include <string>
-#include <ctime>
+
 using namespace std;
-struct Date{
+
+struct Date {
     int year;
     int month;
     int day;
-
-    Date() {
-        year = 0; month = 0; day = 0;
-    }
-    Date(int y, int m, int d) {
-        year = y; month = m; day = d;
-    }
+    
+    Date() { year = 0; month = 0; day = 0; }
+    Date(int y, int m, int d) { year = y; month = m; day = d; }
 };
 
-class Student{
+class Student {
 //properties - những tính chat của đối tượng 
+//private/public: OOP = Data hiding -> Encapsulation 
 private:
     string name;
     string address;  
-    Date birthdate; //yyyy/mm/dd hh:mm:ss
+    Date birthdate; 
     string cccd; 
-
 
 //methods
 public: 
     //constructors: các hàm khởi tạo dữ lieu -> thông báo hđh cap phát vùng nhớ để lưu trữ 
-Student() {
-        name = ""; 
-        address = "";
-        birthdate = Date(); 
-        cccd = "";
+    Student() {
+        name = ""; address = ""; birthdate = Date(); cccd = "";
     }
-    
     Student(string n) {
-        name = n; 
-        address = "";
-        birthdate = Date(); 
-        cccd = "";
+        name = n; address = ""; birthdate = Date(); cccd = "";
     }  
-    
     Student(Date d) {
-        name = ""; 
-        address = ""; 
-        birthdate = d; 
-        cccd = "";
+        name = ""; address = ""; birthdate = d; cccd = "";
+    }
+    Student(string n, string addr) {
+        name = n; address = addr; birthdate = Date(); cccd = "";
+    }
+    Student(string n, string addr, Date d) {
+        name = n; address = addr; birthdate = d; cccd = "";
+    }
+    Student(string n, string addr, Date d, string id) {
+        name = n; address = addr; birthdate = d; cccd = id;
     }
 
-Student(string n, string addr) {
-        name = n;
-        address = addr;
-        birthdate = Date();
-        cccd = "";
-    }
-    
-    Student(string n, string addr, Date d) {
-        name = n;
-        address = addr;
-        birthdate = d;
-        cccd = "";
-    }
-    
-    Student(string n, string addr, Date d, string id) {
-        name = n;
-        address = addr;
-        birthdate = d;
-        cccd = id;
-    }
-	
-// Hàm nhập thông tin
-    void setStudentInfo() {
+    int getBirthYear() { return birthdate.year; }
+    string getAddress() { return address; }
+
+    void setStudentInfo() { //nhập thông tin sinh viên 
         cout << "Nhap ten: ";
         getline(cin, name);
-        cout << "Nhap dia chi: ";
+        cout << "Nhap dia chi (tinh/thanh pho): ";
         getline(cin, address);
+        cout << "Nhap nam sinh: ";
+        cin >> birthdate.year;
+        cout << "Nhap thang sinh: ";
+        cin >> birthdate.month;
+        cout << "Nhap ngay sinh: ";
+        cin >> birthdate.day;
+        cin.ignore();
         cout << "Nhap CCCD: ";
         getline(cin, cccd);
     }
 
-    // Hàm in thông tin (Thêm vào để test code)
-    void printInfo() {
-        cout << "- Ten: " << name 
-             << " | Dia chi: " << address 
-             << " | CCCD: " << cccd << endl;
-    }
-    
-    // Lấy thông tin 1 sinh viên 
-    Student getStudentInfo(string search_cccd) {
+    Student getStudentInfo(string search_cccd) { //lấy thông tin sinh viên 
         if (this->cccd == search_cccd) {
             return *this;
         }
-        return Student(); 
-    }
-    
-    void getStudents(string search_name, Student result[], int max_size, int& out_count) {
-        out_count = 0;
-        
-        Student database[3] = {
-            Student("Huong", "Vo Van Ngan", Date(2007, 12, 1), "001"),
-            Student("Khang", "Thu Duc", Date(2007, 1, 1), "002"),
-            Student("Huong", "Quan 9", Date(2007, 5, 5), "003")
-        };
-        
-        // Logic tìm kiếm
-        for(int i = 0; i < 3; i++) {
-            if (database[i].name == search_name && out_count < max_size) {
-                result[out_count] = database[i];
-                out_count++; 
-            }
-        }
+        return Student();
     }
 
-    void getStudentsbyAge(int age, Student result[], int max_size, int& out_count) {
-        out_count = 0;
-        
-        Student database[3] = {
-            Student("Huong", "Vo Van Ngan", Date(2007, 12, 1), "001"),
-            Student("Khang", "Thu Duc", Date(2007, 1, 1), "002"),
-            Student("Huong", "Quan 9", Date(2007, 5, 5), "003")
-        };
-        
-        const time_t now = time(nullptr);
-        const tm* current_date = localtime(&now);
-        if (current_date == nullptr) {
-            return;
-        }
-
-        const int current_year = current_date->tm_year + 1900;
-        const int current_month = current_date->tm_mon + 1;
-        const int current_day = current_date->tm_mday;
-
-        for (int i = 0; i < 3; i++) {
-            int student_age = current_year - database[i].birthdate.year;
-            if (current_month < database[i].birthdate.month ||
-                (current_month == database[i].birthdate.month &&
-                 current_day < database[i].birthdate.day)) {
-                student_age--;
-            }
-
-            if (student_age == age && out_count < max_size) {
-                result[out_count] = database[i];
-                out_count++;
-            }
-        }
+    void printInfo() {
+        cout << "- Ten: " << name 
+             << " | Tinh: " << address 
+             << " | Ngay sinh: " << birthdate.day << "/" << birthdate.month << "/" << birthdate.year
+             << " | CCCD: " << cccd << endl;
     }
 };
 
-
-int main() {
-    Student s;
-    
-    Student results[50];
-    int found_count = 0;
-    
-    cout << "--- TIM KIEM SINH VIEN TEN 'Huong' ---" << endl;
-    
-    s.getStudents("Huong", results, 50, found_count);
-    
-    if (found_count == 0) {
-        cout << "Khong tim thay sinh vien nao!" << endl;
-    } else {
-        cout << "Tim thay " << found_count << " sinh vien:" << endl;
-        for(int i = 0; i < found_count; i++) {
-            results[i].printInfo();
+void thongKeTheoNamSinh(Student arr[], int size, int targetYear) {
+    int count = 0;
+    cout << "\n--- THONG KE SINH VIEN SINH NAM " << targetYear << " ---" << endl;
+    for (int i = 0; i < size; i++) {
+        if (arr[i].getBirthYear() == targetYear) {
+            arr[i].printInfo();
+            count++;
         }
     }
-    
-    return 0;
+    cout << "=> Tong so luong sinh vien sinh nam " << targetYear << " la: " << count << endl;
+}
+
+void thongKeTheoTinh(Student arr[], int size, string targetProvince) {
+    int count = 0;
+    cout << "\n--- THONG KE SINH VIEN O TINH: " << targetProvince << " ---" << endl;
+    for (int i = 0; i < size; i++) {
+        if (arr[i].getAddress() == targetProvince) {
+            arr[i].printInfo();
+            count++;
+        }
+    }
+    cout << "=> Tong so luong sinh vien o " << targetProvince << " la: " << count << endl;
+}
+
+void main() {
+    Student database[5] = {
+        Student("Khang", "Ho Chi Minh", Date(2007, 12, 1), "001"),
+        Student("Huong", "Dong Nai", Date(2000, 5, 10), "002"),
+        Student("Bao", "Ho Chi Minh", Date(2001, 8, 15), "003"),
+        Student("Phuc", "Binh Duong", Date(2000, 2, 20), "004"),
+        Student("Linh", "Dong Nai", Date(2007, 10, 5), "005")
+    };
+    int total_students = 5;
+
+    thongKeTheoNamSinh(database, total_students, 2000);
+    thongKeTheoNamSinh(database, total_students, 2001);
+
+    thongKeTheoTinh(database, total_students, "Ho Chi Minh");
+    thongKeTheoTinh(database, total_students, "Dong Nai");
 }
